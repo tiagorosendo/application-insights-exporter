@@ -38,13 +38,17 @@ module.exports = async function (context) {
         obj[propName] = item
         return obj
       }, {})))
-      .catch(err => console.log(err))
+      .then((dataSet) => {
+        context.log(dataSet)
+        return dataSet
+      })
+      .catch(err => context.log(err))
 
     await fetch(dataSetUrl, {
       method: 'post',
       body: JSON.stringify(dataSet)
     }).then(_ => context.log('The dataSet was sended to PowerBI'))
-      .catch(err => console.log(err))
+      .catch(err => context.log(err))
   }
 
   context.log('Functions is over')
