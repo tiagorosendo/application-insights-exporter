@@ -7,6 +7,7 @@ const appKey = process.env.APPKEY
 const appInsightsQueryUrl = applicationInsightsRootUrl + '/v1/apps/' + appId + '/query'
 
 const queries = JSON.parse(process.env.QUERIES)
+const dataSetUrl = process.env.DATASETURL
 
 module.exports = async function (context) {
   for (const item of queries) {
@@ -33,12 +34,13 @@ module.exports = async function (context) {
         }
       })
       .then(table => table.rows.map(elem => elem.reduce((obj, item, index) => {
-        obj[table.columns[index].name] = item
+        const propName = item.prefix + '' + table.columns[index].name;
+        obj[propName] = item
         return obj
       }, {})))
       .catch(err => console.log(err))
 
-    await fetch(item.dataSetUrl, {
+    await fetch(dataSetUrl, {
       method: 'post',
       body: JSON.stringify(dataSet)
     }).then(_ => context.log('The dataSet was sended to PowerBI'))
