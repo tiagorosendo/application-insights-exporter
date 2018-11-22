@@ -15,6 +15,8 @@ module.exports = async function (context) {
       'query': item.query
     }
 
+    let prefix = item.prefix
+
     const dataSet = await fetch(appInsightsQueryUrl, {
       method: 'post',
       body: JSON.stringify(requestBody),
@@ -34,7 +36,7 @@ module.exports = async function (context) {
         }
       })
       .then(table => table.rows.map(elem => elem.reduce((obj, item, index) => {
-        const propName = item.prefix + '' + table.columns[index].name;
+        const propName = prefix + '' + table.columns[index].name;
         obj[propName] = item
         return obj
       }, {})))
